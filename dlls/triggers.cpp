@@ -2428,3 +2428,67 @@ void CTriggerCamera::Move()
 	float fraction = 2 * gpGlobals->frametime;
 	pev->velocity = ((pev->movedir * pev->speed) * fraction) + (pev->velocity * (1-fraction));
 }
+
+//=====================
+//LRC - trigger_sound
+//=====================
+extern int gmsgRoomType;
+class CTriggerSound : public CBaseDelay
+{
+public:
+	void KeyValue(KeyValueData* pkvd);
+	void Spawn(void);
+	void Touch(CBaseEntity *pOther);
+
+	virtual int		Save(CSave &save);
+	virtual int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+	virtual int	ObjectCaps(void) { return CBaseDelay::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+
+	int m_iRoomtype;
+	string_t m_iszMaster;
+};
+
+LINK_ENTITY_TO_CLASS(trigger_sound, CTriggerSound);
+TYPEDESCRIPTION	CTriggerSound::m_SaveData[] =
+{
+	DEFINE_FIELD(CTriggerSound, m_iRoomtype, FIELD_INTEGER),
+	DEFINE_FIELD(CTriggerSound, m_iszMaster, FIELD_STRING),
+};
+
+IMPLEMENT_SAVERESTORE(CTriggerSound, CBaseDelay);
+
+void CTriggerSound::KeyValue(KeyValueData *pkvd)
+{
+	if (FStrEq(pkvd->szKeyName, "roomtype"))
+	{
+		m_iRoomtype = atoi(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "master"))
+	{
+		m_iszMaster = ALLOC_STRING(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else
+		CBaseEntity::KeyValue(pkvd);
+}
+extern int gmsgRoomType;
+void CTriggerSound::Touch(CBaseEntity *pOther)
+{
+	if (!UTIL_IsMasterTriggered(m_iszMaster, pOther)) return;
+
+	if (pOther->IsPlayer())
+	{
+		CBasePlayer *pPlayer = (CBasePlayer*)pOther;
+		pPlayer->SetRoomType(m_iRoomtype);
+	}
+}
+
+void CTriggerSound::Spawn()
+{
+	pev->solid = SOLID_TRIGGER;
+	pev->movetype = MOVETYPE_NONE;
+	SET_MODEL(ENT(pev), STRING(pev->model));    // set size and link into world
+	SetBits(pev->effects, EF_NODRAW);
+}

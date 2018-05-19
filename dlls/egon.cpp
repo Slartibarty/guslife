@@ -25,7 +25,7 @@
 #include "customentity.h"
 #include "gamerules.h"
 
-#define	EGON_PRIMARY_VOLUME		450
+#define	EGON_PRIMARY_VOLUME		200
 #define EGON_BEAM_SPRITE		"sprites/xbeam1.spr"
 #define EGON_FLARE_SPRITE		"sprites/XSpark1.spr"
 #define EGON_SOUND_OFF			"weapons/egon_off1.wav"

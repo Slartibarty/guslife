@@ -29,20 +29,20 @@ Studio models are position independent, so the cache manager can move them.
 */
  
 
-#define MAXSTUDIOTRIANGLES	20000	// TODO: tune this
-#define MAXSTUDIOVERTS		2048	// TODO: tune this
-#define MAXSTUDIOSEQUENCES	2048	// total animation sequences -- KSH incremented
-#define MAXSTUDIOSKINS		100		// total textures
-#define MAXSTUDIOSRCBONES	512		// bones allowed at source movement
-#define MAXSTUDIOBONES		128		// total bones actually used
-#define MAXSTUDIOMODELS		32		// sub-models per model
-#define MAXSTUDIOBODYPARTS	32
-#define MAXSTUDIOGROUPS		16
-#define MAXSTUDIOANIMATIONS	2048		
-#define MAXSTUDIOMESHES		256
-#define MAXSTUDIOEVENTS		1024
-#define MAXSTUDIOPIVOTS		256
-#define MAXSTUDIOCONTROLLERS 8
+#define MAXSTUDIOTRIANGLES	32768	// TODO: tune this | original: 20000
+#define MAXSTUDIOVERTS		32768	// TODO: tune this | original: 2048
+#define MAXSTUDIOSEQUENCES	8192	// total animation sequences -- KSH incremented | original: 2048
+#define MAXSTUDIOSKINS		1024		// total textures | original: 100
+#define MAXSTUDIOSRCBONES	8192		// bones allowed at source movement | original: 512
+#define MAXSTUDIOBONES		4096		// total bones actually used | original: 128
+#define MAXSTUDIOMODELS		512		// sub-models per model | original: 32
+#define MAXSTUDIOBODYPARTS	512		// original: 32
+#define MAXSTUDIOGROUPS		128		// original: 16
+#define MAXSTUDIOANIMATIONS	4096	// original: 2048
+#define MAXSTUDIOMESHES		1024		// original: 256
+#define MAXSTUDIOEVENTS		2048	// original: 1024
+#define MAXSTUDIOPIVOTS		512		// original: 256
+#define MAXSTUDIOCONTROLLERS 128		// original: 8
 
 typedef struct 
 {

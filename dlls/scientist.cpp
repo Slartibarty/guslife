@@ -700,6 +700,11 @@ void CScientist :: Precache( void )
 	PRECACHE_SOUND("scientist/sci_pain3.wav");
 	PRECACHE_SOUND("scientist/sci_pain4.wav");
 	PRECACHE_SOUND("scientist/sci_pain5.wav");
+	
+	PRECACHE_SOUND("scientist/sci_die1.wav");
+	PRECACHE_SOUND("scientist/sci_die2.wav");
+	PRECACHE_SOUND("scientist/sci_die3.wav");
+	PRECACHE_SOUND("scientist/sci_die4.wav");
 
 	// every new scientist must call this, otherwise
 	// when a level is loaded, nobody will talk (time is reset to 0)
@@ -805,11 +810,16 @@ void CScientist :: PainSound ( void )
 //=========================================================
 // DeathSound 
 //=========================================================
-void CScientist :: DeathSound ( void )
+void CScientist::DeathSound(void)
 {
-	PainSound();
+	switch (RANDOM_LONG(0, 2))
+	{
+	case 0: EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sc_die1.wav", 1, ATTN_NORM, 0, GetVoicePitch()); break;
+	case 1: EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sc_die2.wav", 1, ATTN_NORM, 0, GetVoicePitch()); break;
+	case 2: EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sc_die3.wav", 1, ATTN_NORM, 0, GetVoicePitch()); break;
+	case 3: EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sc_die3.wav", 1, ATTN_NORM, 0, GetVoicePitch()); break;
+	}
 }
-
 
 void CScientist::Killed( entvars_t *pevAttacker, int iGib )
 {

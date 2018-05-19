@@ -23,6 +23,11 @@
 #include "func_break.h"
 #include "shake.h"
 
+#include "player.h"
+#include "trains.h"
+#include "com_model.h"
+#include "animation.h"
+
 #define	SF_GIBSHOOTER_REPEATABLE	1 // allows a gibshooter to be refired
 
 #define SF_FUNNEL_REVERSE			1 // funnel effect repels particles instead of attracting them.
@@ -2265,4 +2270,102 @@ void CItemSoda::CanTouch ( CBaseEntity *pOther )
 	SetTouch ( NULL );
 	SetThink ( &CItemSoda::SUB_Remove );
 	pev->nextthink = gpGlobals->time;
+}
+
+//=========================================================
+// Generic Item (env_model)
+//=========================================================
+class CEnvModel : public CBaseAnimating
+{
+public:
+	void	Spawn(void);
+	void	Precache(void);
+
+	virtual int		ObjectCaps(void) { return CBaseEntity::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+	void	Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
+};
+
+LINK_ENTITY_TO_CLASS(env_model, CEnvModel);
+
+void CEnvModel::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
+{
+}
+
+void CEnvModel::Precache(void)
+{
+	PRECACHE_MODEL((char *)STRING(pev->model));
+}
+
+void CEnvModel::Spawn(void)
+{
+	Precache();
+	SET_MODEL(ENT(pev), STRING(pev->model));
+
+	// TODO: Make this customizable
+//	pev->renderfx = 101;
+
+	pev->movetype = MOVETYPE_NONE;
+	pev->solid = SOLID_NOT;
+
+	ResetSequenceInfo();
+}
+
+//=========================================================
+// Env_SetSequence
+//=========================================================
+class CEnvSetSequence : public CBaseEntity
+{
+public:
+	void	Spawn(void);
+
+	virtual int		ObjectCaps(void) { return CBaseEntity::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+	void	Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
+};
+
+LINK_ENTITY_TO_CLASS(env_setsequence, CEnvSetSequence);
+
+void CEnvSetSequence::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
+{
+	edict_t* pEntity = FIND_ENTITY_BY_TARGETNAME(NULL, STRING(pev->target));
+	if (!pEntity)
+	{
+		ALERT(at_console, "CEnvSetSequence: Can't find target %s\n", STRING(pev->target));
+		return;
+	}
+
+	if (!pEntity->v.modelindex)
+	{
+		ALERT(at_console, "CEnvSetSequence: Target %s does not have a valid model\n", STRING(pev->target));
+		return;
+	}
+
+	void* pmodel = GET_MODEL_PTR(pEntity);
+	if (!pmodel)
+	{
+		ALERT(at_console, "CEnvSetSequence: Target %s does not have a valid model\n", STRING(pev->target));
+		return;
+	}
+
+	if (strncmp((char*)pmodel, "IDST", 4))
+	{
+		ALERT(at_console, "CEnvSetSequence: Target %s must have the IDST model format\n", STRING(pev->target));
+		return;
+	}
+
+	int sequence = LookupSequence(pmodel, STRING(pev->message));
+	if (sequence == -1)
+	{
+		ALERT(at_console, "CEnvSetSequence: Can't find sequence %s\n", STRING(pev->message));
+		return;
+	}
+
+	// Set the sequence
+	pEntity->v.sequence = sequence;
+}
+
+void CEnvSetSequence::Spawn(void)
+{
+	pev->movetype = MOVETYPE_NONE;
+	pev->effects |= EF_NODRAW;
+	pev->solid = SOLID_NOT;
 }

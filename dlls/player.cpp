@@ -117,6 +117,7 @@ TYPEDESCRIPTION	CBasePlayer::m_playerSaveData[] =
 	DEFINE_FIELD( CBasePlayer, m_pTank, FIELD_EHANDLE ),
 	DEFINE_FIELD( CBasePlayer, m_iHideHUD, FIELD_INTEGER ),
 	DEFINE_FIELD( CBasePlayer, m_iFOV, FIELD_INTEGER ),
+	DEFINE_FIELD(CBasePlayer, m_iClientRoomType, FIELD_INTEGER)
 	
 	//DEFINE_FIELD( CBasePlayer, m_fDeadTime, FIELD_FLOAT ), // only used in multiplayer games
 	//DEFINE_FIELD( CBasePlayer, m_fGameHUDInitialized, FIELD_INTEGER ), // only used in multiplayer games
@@ -3948,6 +3949,14 @@ reflecting all of the HUD state info.
 */
 void CBasePlayer :: UpdateClientData( void )
 {
+	if (m_iClientRoomType != m_iRoomType)
+	{
+		MESSAGE_BEGIN(MSG_ONE, SVC_ROOMTYPE, NULL, pev);		// use the magic #1 for "one client"
+		WRITE_SHORT((short)m_iRoomType);					// sequence number
+		MESSAGE_END();
+		m_iClientRoomType = m_iRoomType;
+	}
+
 	if (m_fInitHUD)
 	{
 		m_fInitHUD = FALSE;
@@ -4235,6 +4244,18 @@ void CBasePlayer :: EnableControl(BOOL fControl)
 
 }
 
+/*
+=========================================================
+SetRoomType
+=========================================================
+*/
+void CBasePlayer::SetRoomType(int type)
+{
+	if (m_iRoomType == type)
+		return;
+
+	m_iRoomType = type;
+}
 
 #define DOT_1DEGREE   0.9998476951564
 #define DOT_2DEGREE   0.9993908270191

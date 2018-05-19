@@ -1232,10 +1232,11 @@ void CFurniture :: Spawn( )
 	PRECACHE_MODEL((char *)STRING(pev->model));
 	SET_MODEL(ENT(pev),	STRING(pev->model));
 
+	m_bloodColor	= DONT_BLEED;
 	pev->movetype	= MOVETYPE_NONE;
-	pev->solid		= SOLID_BBOX;
+	pev->solid		= SOLID_NOT;
 	pev->health		= 80000;
-	pev->takedamage = DAMAGE_AIM;
+	pev->takedamage = DAMAGE_NO;
 	pev->effects		= 0;
 	pev->yaw_speed		= 0;
 	pev->sequence		= 0;
