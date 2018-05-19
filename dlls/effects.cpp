@@ -23,9 +23,6 @@
 #include "func_break.h"
 #include "shake.h"
 
-#include "player.h"
-#include "trains.h"
-#include "com_model.h"
 #include "animation.h"
 
 #define	SF_GIBSHOOTER_REPEATABLE	1 // allows a gibshooter to be refired
