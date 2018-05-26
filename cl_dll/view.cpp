@@ -102,8 +102,8 @@ cvar_t	v_ipitch_level		= {"v_ipitch_level", "0.3", 0, 0.3};
 
 float	v_idlescale;  // used by TFC for concussion grenade effect
 
-//=============================================================================
 /*
+//=============================================================================
 void V_NormalizeAngles( float *angles )
 {
 	int i;
@@ -121,7 +121,6 @@ void V_NormalizeAngles( float *angles )
 	}
 }
 
-/*
 ===================
 V_InterpolateAngles
 
@@ -158,7 +157,8 @@ void V_InterpolateAngles( float *start, float *end, float *output, float frac )
 	}
 
 	V_NormalizeAngles( output );
-} */
+}
+*/
 
 // Quakeworld bob code, this fixes jitters in the mutliplayer since the clock (pparams->time) isn't quite linear
 float V_CalcBob ( struct ref_params_s *pparams )
@@ -278,6 +278,7 @@ If the user is adjusting pitch manually, either with lookup/lookdown,
 mlook and mouse, or klook and keyboard, pitch drifting is constantly stopped.
 ===============
 */
+
 void V_DriftPitch ( struct ref_params_s *pparams )
 {
 	float		delta, move;
@@ -419,6 +420,23 @@ void V_CalcViewRoll ( struct ref_params_s *pparams )
 		// only roll the view if the player is dead and the viewheight[2] is nonzero 
 		// this is so deadcam in multiplayer will work.
 		pparams->viewangles[ROLL] = 80;	// dead view angle
+
+#define SF_TEST
+#if defined SF_TEST
+		{
+			screenfade_t sf;
+			gEngfuncs.pfnGetScreenFade(&sf);
+
+			sf.fader = 255;
+			sf.fadeg = 0;
+			sf.fadeb = 0;
+			sf.fadealpha = 192;
+			sf.fadeFlags = FFADE_STAYOUT | FFADE_OUT;
+
+			gEngfuncs.pfnSetScreenFade(&sf);
+		}
+#endif
+
 		return;
 	}
 }

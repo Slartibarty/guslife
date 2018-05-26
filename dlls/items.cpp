@@ -296,6 +296,8 @@ class CItemSecurity : public CItem
 	}
 	BOOL MyTouch( CBasePlayer *pPlayer )
 	{
+		EMIT_SOUND(pPlayer->edict(), CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+
 		pPlayer->m_rgItems[ITEM_SECURITY] += 1;
 		return TRUE;
 	}
