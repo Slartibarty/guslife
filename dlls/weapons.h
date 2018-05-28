@@ -514,6 +514,7 @@ public:
 	int Swing( int fFirst );
 	BOOL Deploy( void );
 	void Holster( int skiplocal = 0 );
+	void WeaponIdle( void );
 	int m_iSwing;
 	TraceResult m_trHit;
 
@@ -740,7 +741,7 @@ public:
 
 	int m_iTrail;
 	float m_flIgniteTime;
-	CRpg *m_pLauncher;// pointer back to the launcher that fired me. 
+	EHANDLE m_hLauncher;// handle back to the launcher that fired me. 
 };
 
 class CGauss : public CBasePlayerWeapon
